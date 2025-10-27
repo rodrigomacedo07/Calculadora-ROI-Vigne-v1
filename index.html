@@ -313,7 +313,8 @@
                 <div class="form-group">
                     <label for="in_Preco_Venda_Pacote">Preço de Venda do Pacote (R$)</label>
                     <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
-                    <input type="text" id="in_Preco_Venda_Pacote" value="9000.00" inputmode="numeric">
+                    <!-- MUDANÇA (TAREFA 1 - FIX): value="9000.00" -> value="9000" -->
+                    <input type="text" id="in_Preco_Venda_Pacote" value="9000" inputmode="numeric">
                 </div>
                 <div class="form-group">
                     <label for="in_Duracao_Ciclo">Duração do Ciclo (Meses)</label>
@@ -326,7 +327,8 @@
                 <div class="form-group">
                     <label for="in_Ticket_Medio_Avulso">Ticket Médio Avulso (R$)</label>
                     <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
-                    <input type="text" id="in_Ticket_Medio_Avulso" value="166.67" inputmode="numeric">
+                    <!-- MUDANÇA (TAREFA 1 - FIX): value="166.67" -> value="167" (arredondado) -->
+                    <input type="text" id="in_Ticket_Medio_Avulso" value="167" inputmode="numeric">
                 </div>
             </div>
 
@@ -340,7 +342,8 @@
                 <div class="form-group">
                     <label for="in_Salario_Base">Salário Base Médio (R$)</label>
                     <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
-                    <input type="text" id="in_Salario_Base" value="1800.00" inputmode="numeric">
+                    <!-- MUDANÇA (TAREFA 1 - FIX): value="1800.00" -> value="1800" -->
+                    <input type="text" id="in_Salario_Base" value="1800" inputmode="numeric">
                 </div>
                 <div class="form-group">
                     <label for="in_Encargos_CLT">% Encargos CLT (Aprox.)</label>
@@ -447,7 +450,8 @@
                 <div class="form-group">
                     <label for="in_Valor_Medio_Saldo_Perdido">Valor Médio do Saldo Perdido (R$)</label>
                     <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
-                    <input type="text" id="in_Valor_Medio_Saldo_Perdido" value="300.00" inputmode="numeric">
+                    <!-- MUDANÇA (TAREFA 1 - FIX): value="300.00" -> value="300" -->
+                    <input type="text" id="in_Valor_Medio_Saldo_Perdido" value="300" inputmode="numeric">
                 </div>
 
                 <div class="output-group">
@@ -610,7 +614,7 @@
 
             // --- INÍCIO DA LÓGICA RECONSTRUÍDA ---
 
-            // MUDANÇA (TAREFA 4): Lista de campos que usarão a máscara
+            // MUDANÇA (TAREFA 2 - FIX): Lista de campos que usarão a máscara
             const camposMonetarios = [
                 'Valor_Solucao',
                 'Preco_Venda_Pacote',
@@ -625,7 +629,7 @@
                 const v = {};
                 for (const key in inputs) {
                     
-                    // MUDANÇA (TAREFA 3): 
+                    // MUDANÇA (TAREFA 2 - FIX): 
                     // Se o campo for monetário, usa a função para desmascarar
                     // Se não, usa a lógica antiga (parseFloat)
                     if (camposMonetarios.includes(key)) {
@@ -702,7 +706,7 @@
 
             // 6. Adicionar Event Listeners
             
-            // MUDANÇA (TAREFA 4): Novo loop de listeners
+            // MUDANÇA (TAREFA 2 - FIX): Novo loop de listeners
             for (const key in inputs) {
                 if (camposMonetarios.includes(key)) {
                     // Se for monetário, aplica a máscara E recalcula
@@ -719,7 +723,7 @@
 
             // 7. Calcular ao carregar a página
             
-            // MUDANÇA (TAREFA 4): Formatar valores iniciais ao carregar
+            // MUDANÇA (TAREFA 2 - FIX): Formatar valores iniciais ao carregar
             for (const key of camposMonetarios) {
                 if (inputs[key]) {
                     formatarValorMonetario(inputs[key]);
