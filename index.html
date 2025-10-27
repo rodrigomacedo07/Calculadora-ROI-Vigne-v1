@@ -700,21 +700,21 @@
                 // 3. Cálculos de Perdas Modulares
                 const m = {}; // 'm' de modulares
 
-                // Ex 1: "Conta de Bar" (Avulsos)
-                m.Perda_Ex1_Mensal = v.Base_Pacientes * (v.Pct_Pacientes_Avulsos / 100) * v.Ticket_Medio_Avulso * (v.Pct_Esquecimento_Cobranca / 100);
+                // Ex 2: "Conta de Bar" (Avulsos)
+                m.Perda_Ex2_Mensal = v.Base_Pacientes * (v.Pct_Pacientes_Avulsos / 100) * v.Ticket_Medio_Avulso * (v.Pct_Esquecimento_Cobranca / 100);
                 
-                // Ex 2: "Pacientes Sumidos" (Churn)
-                m.Perda_Ex2_Mensal = p.Pacientes_em_Renovacao * (v.Pct_Churn_Evitavel / 100) * p.Ticket_Medio_Mensal_Pacote;
+                // Ex 5: "Pacientes Sumidos" (Churn)
+                m.Perda_Ex5_Mensal = p.Pacientes_em_Renovacao * (v.Pct_Churn_Evitavel / 100) * p.Ticket_Medio_Mensal_Pacote;
                 
-                // Ex 3: "Triplo Registro" (Ineficiência)
+                // Ex 4: "Triplo Registro" (Ineficiência)
                 // MUDANÇA (TAREFA 3): Multiplicar pelo número de funcionários
-                m.Perda_Ex3_Mensal = p.Horas_Retrabalho_Mes * p.Custo_Hora_Equipe * v.Num_Funcionarios;
+                m.Perda_Ex4_Mensal = p.Horas_Retrabalho_Mes * p.Custo_Hora_Equipe * v.Num_Funcionarios;
                 
-                // Ex 4: "Saldos Devedores" (Inadimplência)
-                m.Perda_Ex4_Mensal = v.Ocorrencias_Saldo_Perdido * v.Valor_Medio_Saldo_Perdido;
+                // Ex 1: "Saldos Devedores" (Inadimplência)
+                m.Perda_Ex1_Mensal = v.Ocorrencias_Saldo_Perdido * v.Valor_Medio_Saldo_Perdido;
                 
-                // Ex 5: "Dose Extra" (Erro Operacional)
-                m.Perda_Ex5_Mensal = v.Ocorrencias_Dose_Extra * p.Valor_Venda_Dose_Erro;
+                // Ex 3: "Dose Extra" (Erro Operacional)
+                m.Perda_Ex3_Mensal = v.Ocorrencias_Dose_Extra * p.Valor_Venda_Dose_Erro;
 
                 // 4. Cálculos Finais (ROI e Totais)
                 const r = {}; // 'r' de resultados
