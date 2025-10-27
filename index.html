@@ -169,6 +169,17 @@
             color: var(--text-label);
             line-height: 1.4;
         }
+        
+        /* MUDANÇA (TAREFA 1): Novo estilo para o texto informativo */
+        .form-group-info {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-primary); /* Cor do tema */
+            margin-top: 4px;
+            height: 1.2em; /* Garante altura fixa para evitar "pulos" */
+        }
+
 
         .form-group input {
             width: 100%;
@@ -375,12 +386,20 @@
                     <strong>A Dor:</strong> Perda de receita de serviços avulsos (B12, Vita D) por falha no controle
                     manual e esquecimento na hora da cobrança.
                 </p>
+                <!-- MUDANÇA (TAREFA 2): Estrutura do form-group alterada -->
                 <div class="form-group">
-                    <label for="in_Pct_Pacientes_Avulsos">% de Pacientes com Avulsos</label>
+                    <div>
+                        <label for="in_Pct_Pacientes_Avulsos">% de Pacientes com Avulsos</label>
+                        <span class="form-group-info" id="info_Pct_Pacientes_Avulsos"></span>
+                    </div>
                     <input type="number" id="in_Pct_Pacientes_Avulsos" value="20">
                 </div>
+                <!-- MUDANÇA (TAREFA 2): Estrutura do form-group alterada -->
                 <div class="form-group">
-                    <label for="in_Pct_Esquecimento_Cobranca">% de Esquecimento na Cobrança</label>
+                    <div>
+                        <label for="in_Pct_Esquecimento_Cobranca">% de Esquecimento na Cobrança</label>
+                        <span class="form-group-info" id="info_Pct_Esquecimento_Cobranca"></span>
+                    </div>
                     <input type="number" id="in_Pct_Esquecimento_Cobranca" value="10">
                 </div>
 
@@ -397,8 +416,12 @@
                     <strong>A Dor:</strong> Perda de renovações de pacote por falta de um contato ativo (FUP) com
                     pacientes que estão terminando o ciclo de tratamento.
                 </p>
+                <!-- MUDANÇA (TAREFA 2): Estrutura do form-group alterada -->
                 <div class="form-group">
-                    <label for="in_Pct_Churn_Evitavel">% de Churn Evitável (Falta de FUP)</label>
+                    <div>
+                        <label for="in_Pct_Churn_Evitavel">% de Churn Evitável (Falta de FUP)</label>
+                        <span class="form-group-info" id="info_Pct_Churn_Evitavel"></span>
+                    </div>
                     <input type="number" id="in_Pct_Churn_Evitavel" value="10">
                 </div>
 
@@ -422,8 +445,12 @@
                     <strong>A Dor:</strong> Custo do tempo da equipe gasto em retrabalho (gestão de fichas, cadernos,
                     listas) em vez de atividades que geram valor.
                 </p>
+                <!-- MUDANÇA (TAREFA 2): Estrutura do form-group alterada -->
                 <div class="form-group">
-                    <label for="in_Pct_Tempo_Retrabalho">% de Tempo Gasto em Retrabalho</label>
+                    <div>
+                        <label for="in_Pct_Tempo_Retrabalho">% de Tempo Gasto em Retrabalho</label>
+                        <span class="form-group-info" id="info_Pct_Tempo_Retrabalho"></span>
+                    </div>
                     <input type="number" id="in_Pct_Tempo_Retrabalho" value="15">
                 </div>
 
@@ -476,7 +503,7 @@
                 </div>
 
                 <div class="output-group">
-                    <span class="label">Premissa: Preço de Venda por MG (R$)</span>
+                    <span class="label">Premissa: Preço de Venda por "mg" (R$)</span>
                     <span class="value" id="out_Preco_Venda_por_MG">R$ 0,00</span>
                 </div>
                 <div class="output-group">
@@ -547,6 +574,12 @@
                 Perda_Ex3_Mensal: document.getElementById('out_Perda_Ex3_Mensal'),
                 Perda_Ex4_Mensal: document.getElementById('out_Perda_Ex4_Mensal'),
                 Perda_Ex5_Mensal: document.getElementById('out_Perda_Ex5_Mensal'),
+
+                // MUDANÇA (TAREFA 3): Mapeamento dos novos campos de info
+                info_Pct_Pacientes_Avulsos: document.getElementById('info_Pct_Pacientes_Avulsos'),
+                info_Pct_Esquecimento_Cobranca: document.getElementById('info_Pct_Esquecimento_Cobranca'),
+                info_Pct_Churn_Evitavel: document.getElementById('info_Pct_Churn_Evitavel'),
+                info_Pct_Tempo_Retrabalho: document.getElementById('info_Pct_Tempo_Retrabalho'),
             };
 
             // Funções de Formatação
@@ -604,7 +637,8 @@
             // Esta função remove a máscara R$ xx.xxx para poder calcular
             function desmascararValor(valorString) {
                 if (!valorString) return 0;
-                // Remove "R$ ", remove "." (milhares), e converte para número
+                // MUDANÇA (TAREFA 0 - Correção de Bug):
+                // Troca "R$ " por uma RegEx que lida com qualquer espaço
                 let num = valorString.replace(/R\$\s*/, "").replace(/\./g, "");
                 return parseFloat(num) || 0;
             }
@@ -680,6 +714,19 @@
                 r.Perda_Total_Anual = r.Perda_Total_Mensal * 12;
                 r.Payback_Meses = (r.Perda_Total_Mensal > 0) ? v.Valor_Solucao / r.Perda_Total_Mensal : 0;
 
+
+                // MUDANÇA (TAREFA 4): Cálculos dos Infos Absolutos
+                // ==================================================
+                const abs_PacientesAvulsos = v.Base_Pacientes * (v.Pct_Pacientes_Avulsos / 100);
+                const abs_AplicacoesSemCobranca = abs_PacientesAvulsos * (v.Pct_Esquecimento_Cobranca / 100);
+                const abs_PacientesChurn = p.Pacientes_em_Renovacao * (v.Pct_Churn_Evitavel / 100);
+                
+                // Assumindo 5 dias de trabalho por semana
+                const diasTrabalhadosMes = v.Semanas_Mes * 5; 
+                const abs_HorasRetrabalhoDia = (diasTrabalhadosMes > 0) ? p.Horas_Retrabalho_Mes / diasTrabalhadosMes : 0;
+                // ==================================================
+
+
                 // 5. Atualizar a UI (Outputs)
 
                 // Premissas
@@ -701,6 +748,14 @@
                 outputs.Perda_Total_Mensal.textContent = formatCurrency(r.Perda_Total_Mensal);
                 outputs.Perda_Total_Anual.textContent = formatCurrency(r.Perda_Total_Anual);
                 outputs.Payback_Meses.textContent = formatNumber(r.Payback_Meses, 2);
+
+                // MUDANÇA (TAREFA 5): Atualizar os textos dos infos
+                // ==================================================
+                outputs.info_Pct_Pacientes_Avulsos.textContent = `≅ ${formatInteger(abs_PacientesAvulsos)} pacientes`;
+                outputs.info_Pct_Esquecimento_Cobranca.textContent = `≅ ${formatNumber(abs_AplicacoesSemCobranca, 1)} aplicações/mês sem cobrança`;
+                outputs.info_Pct_Churn_Evitavel.textContent = `≅ ${formatNumber(abs_PacientesChurn, 1)} pacientes perdidos/mês`;
+                outputs.info_Pct_Tempo_Retrabalho.textContent = `≅ ${formatNumber(abs_HorasRetrabalhoDia, 1)} horas/dia`;
+                // ==================================================
             
             } // Fim da função calcularROI()
 
