@@ -275,39 +275,7 @@
             <p>Simule o impacto financeiro de processos manuais na sua clínica.</p>
         </header>
 
-        <!-- 1. SEÇÃO DE RESULTADOS (ROI) -->
-        <div class="card">
-            <h2>Resultados Chave (ROI)</h2>
-            <p class="explanation">
-                Esta seção mostra o resultado final da simulação. A <strong>'Perda Total Anual'</strong> é o quanto a
-                clínica deixa de ganhar (ou perde) em 12 meses ao manter os processos manuais. O
-                <strong>'Payback'</strong> mostra em quantos meses o investimento na nova ferramenta se paga com a economia
-                gerada.
-            </p>
-
-            <div class="results-grid">
-                <div class="result-item yellow">
-                    Perda Total Mensal (R$)
-                    <span id="out_Perda_Total_Mensal">R$ 0,00</span>
-                </div>
-                <div class="result-item yellow">
-                    Perda Total Anual (R$)
-                    <span id="out_Perda_Total_Anual">R$ 0,00</span>
-                </div>
-                <div class="result-item blue">
-                    Payback da Solução (Meses)
-                    <span id="out_Payback_Meses">0.00</span>
-                </div>
-            </div>
-
-            <div class="form-group input-solution">
-                <label for="in_Valor_Solucao">Valor da Solução (R$)</label>
-                <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
-                <input type="text" id="in_Valor_Solucao" value="90000" inputmode="numeric">
-            </div>
-        </div>
-
-        <!-- 2. PARÂMETROS GLOBAIS -->
+        <!-- 1. PARÂMETROS GLOBAIS -->
         <div class="global-grid">
             <div class="card">
                 <h2>Parâmetros da Clínica</h2>
@@ -521,6 +489,37 @@
                 </div>
             </div>
         </div> <!-- Fim .modules-grid -->
+                <!-- SEÇÃO DE RESULTADOS (ROI) -->
+        <div class="card">
+            <h2>Resultados Chave (ROI)</h2>
+            <p class="explanation">
+                Esta seção mostra o resultado final da simulação. A <strong>'Perda Total Anual'</strong> é o quanto a
+                clínica deixa de ganhar (ou perde) em 12 meses ao manter os processos manuais. O
+                <strong>'Payback'</strong> mostra em quantos meses o investimento na nova ferramenta se paga com a economia
+                gerada.
+            </p>
+
+            <div class="results-grid">
+                <div class="result-item yellow">
+                    Perda Total Mensal (R$)
+                    <span id="out_Perda_Total_Mensal">R$ 0,00</span>
+                </div>
+                <div class="result-item yellow">
+                    Perda Total Anual (R$)
+                    <span id="out_Perda_Total_Anual">R$ 0,00</span>
+                </div>
+                <div class="result-item blue">
+                    Payback da Solução (Meses)
+                    <span id="out_Payback_Meses">0.00</span>
+                </div>
+            </div>
+
+            <div class="form-group input-solution">
+                <label for="in_Valor_Solucao">Valor da Solução (R$)</label>
+                <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
+                <input type="text" id="in_Valor_Solucao" value="90000" inputmode="numeric">
+            </div>
+        </div>
     </div> <!-- Fim .container -->
 
     <!-- Início do Script JavaScript -->
