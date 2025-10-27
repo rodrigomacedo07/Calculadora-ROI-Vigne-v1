@@ -369,6 +369,12 @@
                     <input type="number" id="in_Semanas_Mes" value="4.4">
                 </div>
 
+                <!-- MUDANÇA (TAREFA 1): Novo campo Nº de Funcionários -->
+                <div class="form-group">
+                    <label for="in_Num_Funcionarios">Nº de Funcionários na Operação</label>
+                    <input type="number" id="in_Num_Funcionarios" value="1" step="1">
+                </div>
+
                 <div class="output-group">
                     <span class="label">Premissa: Custo-Hora da Equipe (R$)</span>
                     <span class="value" id="out_Custo_Hora_Equipe">R$ 0,00</span>
@@ -503,7 +509,7 @@
                 </div>
 
                 <div class="output-group">
-                    <span class="label">Premissa: Preço de Venda por "mg" (R$)</span>
+                    <span class="label">Premissa: Preço de Venda por MG (R$)</span>
                     <span class="value" id="out_Preco_Venda_por_MG">R$ 0,00</span>
                 </div>
                 <div class="output-group">
@@ -537,6 +543,8 @@
                 Encargos_CLT: document.getElementById('in_Encargos_CLT'),
                 Horas_Semana: document.getElementById('in_Horas_Semana'),
                 Semanas_Mes: document.getElementById('in_Semanas_Mes'),
+                // MUDANÇA (TAREFA 2): Mapear novo input
+                Num_Funcionarios: document.getElementById('in_Num_Funcionarios'),
                 // Risco Ex 1
                 Pct_Pacientes_Avulsos: document.getElementById('in_Pct_Pacientes_Avulsos'),
                 Pct_Esquecimento_Cobranca: document.getElementById('in_Pct_Esquecimento_Cobranca'),
@@ -700,7 +708,8 @@
                 m.Perda_Ex2_Mensal = p.Pacientes_em_Renovacao * (v.Pct_Churn_Evitavel / 100) * p.Ticket_Medio_Mensal_Pacote;
                 
                 // Ex 3: "Triplo Registro" (Ineficiência)
-                m.Perda_Ex3_Mensal = p.Horas_Retrabalho_Mes * p.Custo_Hora_Equipe;
+                // MUDANÇA (TAREFA 3): Multiplicar pelo número de funcionários
+                m.Perda_Ex3_Mensal = p.Horas_Retrabalho_Mes * p.Custo_Hora_Equipe * v.Num_Funcionarios;
                 
                 // Ex 4: "Saldos Devedores" (Inadimplência)
                 m.Perda_Ex4_Mensal = v.Ocorrencias_Saldo_Perdido * v.Valor_Medio_Saldo_Perdido;
@@ -724,6 +733,8 @@
                 // Assumindo 5 dias de trabalho por semana
                 const diasTrabalhadosMes = v.Semanas_Mes * 5; 
                 const abs_HorasRetrabalhoDia = (diasTrabalhadosMes > 0) ? p.Horas_Retrabalho_Mes / diasTrabalhadosMes : 0;
+                // MUDANÇA (TAREFA 4): Calcular total de horas
+                const abs_HorasRetrabalhoDia_Total = abs_HorasRetrabalhoDia * v.Num_Funcionarios;
                 // ==================================================
 
 
@@ -754,7 +765,8 @@
                 outputs.info_Pct_Pacientes_Avulsos.textContent = `≅ ${formatInteger(abs_PacientesAvulsos)} pacientes`;
                 outputs.info_Pct_Esquecimento_Cobranca.textContent = `≅ ${formatNumber(abs_AplicacoesSemCobranca, 1)} aplicações/mês sem cobrança`;
                 outputs.info_Pct_Churn_Evitavel.textContent = `≅ ${formatNumber(abs_PacientesChurn, 1)} pacientes perdidos/mês`;
-                outputs.info_Pct_Tempo_Retrabalho.textContent = `≅ ${formatNumber(abs_HorasRetrabalhoDia, 1)} horas/dia`;
+                // MUDANÇA (TAREFA 4): Atualizar texto do informativo
+                outputs.info_Pct_Tempo_Retrabalho.textContent = `≅ ${formatNumber(abs_HorasRetrabalhoDia, 1)} h/dia por funcionário (Total: ${formatNumber(abs_HorasRetrabalhoDia_Total, 1)} h/dia)`;
                 // ==================================================
             
             } // Fim da função calcularROI()
@@ -792,3 +804,4 @@
     </script>
 </body>
 </html>
+
