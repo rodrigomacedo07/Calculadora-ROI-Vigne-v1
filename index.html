@@ -291,7 +291,8 @@
 
             <div class="form-group input-solution">
                 <label for="in_Valor_Solucao">Valor da Solução (R$)</label>
-                <input type="number" id="in_Valor_Solucao" value="90000" step="1000">
+                <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
+                <input type="text" id="in_Valor_Solucao" value="90000" inputmode="numeric">
             </div>
         </div>
 
@@ -311,7 +312,8 @@
                 </div>
                 <div class="form-group">
                     <label for="in_Preco_Venda_Pacote">Preço de Venda do Pacote (R$)</label>
-                    <input type="number" id="in_Preco_Venda_Pacote" value="9000.00" step="100">
+                    <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
+                    <input type="text" id="in_Preco_Venda_Pacote" value="9000.00" inputmode="numeric">
                 </div>
                 <div class="form-group">
                     <label for="in_Duracao_Ciclo">Duração do Ciclo (Meses)</label>
@@ -323,7 +325,8 @@
                 </div>
                 <div class="form-group">
                     <label for="in_Ticket_Medio_Avulso">Ticket Médio Avulso (R$)</label>
-                    <input type="number" id="in_Ticket_Medio_Avulso" value="166.67" step="10">
+                    <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
+                    <input type="text" id="in_Ticket_Medio_Avulso" value="166.67" inputmode="numeric">
                 </div>
             </div>
 
@@ -336,7 +339,8 @@
                 </p>
                 <div class="form-group">
                     <label for="in_Salario_Base">Salário Base Médio (R$)</label>
-                    <input type="number" id="in_Salario_Base" value="1800.00" step="50">
+                    <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
+                    <input type="text" id="in_Salario_Base" value="1800.00" inputmode="numeric">
                 </div>
                 <div class="form-group">
                     <label for="in_Encargos_CLT">% Encargos CLT (Aprox.)</label>
@@ -442,7 +446,8 @@
                 </div>
                 <div class="form-group">
                     <label for="in_Valor_Medio_Saldo_Perdido">Valor Médio do Saldo Perdido (R$)</label>
-                    <input type="number" id="in_Valor_Medio_Saldo_Perdido" value="300.00" step="50">
+                    <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
+                    <input type="text" id="in_Valor_Medio_Saldo_Perdido" value="300.00" inputmode="numeric">
                 </div>
 
                 <div class="output-group">
@@ -561,14 +566,73 @@
                 });
             };
 
+            // MUDANÇA (TAREFA 1): ADIÇÃO DAS FUNÇÕES DE MÁSCARA
+            // ==================================================
+            // Esta função aplica a máscara R$ xx.xxx
+            function formatarValorMonetario(inputElement) {
+                let value = inputElement.value;
+                
+                // 1. Limpa tudo que não for dígito
+                // (Remove centavos, R$, pontos, etc. do valor antigo)
+                value = value.replace(/\D/g, "");
+                
+                // 2. Remove zeros à esquerda (ex: "0090" -> "90")
+                value = value.replace(/^0+/, '');
+
+                if (value.length === 0) {
+                    inputElement.value = "R$ 0";
+                    return;
+                }
+
+                // 3. Converte para número e formata como moeda BRL, SEM centavos
+                let num = parseInt(value, 10);
+                
+                let formattedValue = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(num); // Ex: 90000 -> "R$ 90.000"
+                
+                inputElement.value = formattedValue;
+            }
+
+            // Esta função remove a máscara R$ xx.xxx para poder calcular
+            function desmascararValor(valorString) {
+                if (!valorString) return 0;
+                // Remove "R$ ", remove "." (milhares), e converte para número
+                let num = valorString.replace("R$ ", "").replace(/\./g, "");
+                return parseFloat(num) || 0;
+            }
+            // ==================================================
+            // FIM DA TAREFA 1
+
+
             // --- INÍCIO DA LÓGICA RECONSTRUÍDA ---
+
+            // MUDANÇA (TAREFA 4): Lista de campos que usarão a máscara
+            const camposMonetarios = [
+                'Valor_Solucao',
+                'Preco_Venda_Pacote',
+                'Ticket_Medio_Avulso',
+                'Salario_Base',
+                'Valor_Medio_Saldo_Perdido'
+            ];
 
             // Função Principal de Cálculo
             function calcularROI() {
                 // 1. Coletar todos os valores dos inputs
                 const v = {};
                 for (const key in inputs) {
-                    v[key] = parseFloat(inputs[key].value) || 0;
+                    
+                    // MUDANÇA (TAREFA 3): 
+                    // Se o campo for monetário, usa a função para desmascarar
+                    // Se não, usa a lógica antiga (parseFloat)
+                    if (camposMonetarios.includes(key)) {
+                        v[key] = desmascararValor(inputs[key].value);
+                    } else {
+                        v[key] = parseFloat(inputs[key].value) || 0;
+                    }
                 }
 
                 // 2. Cálculos Intermediários (Premissas)
@@ -637,12 +701,31 @@
             } // Fim da função calcularROI()
 
             // 6. Adicionar Event Listeners
-            // Adiciona um listener 'input' para cada input
+            
+            // MUDANÇA (TAREFA 4): Novo loop de listeners
             for (const key in inputs) {
-                inputs[key].addEventListener('input', calcularROI);
+                if (camposMonetarios.includes(key)) {
+                    // Se for monetário, aplica a máscara E recalcula
+                    inputs[key].addEventListener('input', (e) => {
+                        formatarValorMonetario(e.target); // Formata
+                        calcularROI(); // Recalcula
+                    });
+                } else {
+                    // Se for número normal, apenas recalcula
+                    inputs[key].addEventListener('input', calcularROI);
+                }
             }
 
+
             // 7. Calcular ao carregar a página
+            
+            // MUDANÇA (TAREFA 4): Formatar valores iniciais ao carregar
+            for (const key of camposMonetarios) {
+                if (inputs[key]) {
+                    formatarValorMonetario(inputs[key]);
+                }
+            }
+
             // Garante que os valores iniciais sejam calculados assim que a página carrega
             calcularROI();
 
@@ -650,4 +733,3 @@
     </script>
 </body>
 </html>
-
