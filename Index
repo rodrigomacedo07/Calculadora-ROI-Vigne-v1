@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de ROI - Custo da Inação</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #FBFBFB;
+            --bg-card: #FFFFFF;
+            --color-primary: #C09F94;
+            --text-title: #333333;
+            --text-body: #777777;
+            --text-label: #555555;
+            --border-color: #EAEAEA;
+            --tag-yellow-bg: #FEF7D5;
+            --tag-yellow-text: #C79A00;
+            --tag-blue-bg: #EAF2FF;
+            --tag-blue-text: #7A9EE5;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            margin: 0;
+            padding: 24px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 24px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--text-title);
+            margin: 0;
+            padding: 0;
+            font-weight: 700;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .explanation {
+            font-size: 14px;
+            color: var(--text-body);
+            margin-top: 4px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+            border-left: 3px solid var(--color-primary);
+            padding-left: 12px;
+            background-color: #fdfaf9;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            padding: 16px;
+            border-radius: 99px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .result-item span {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .result-item.yellow {
+            background-color: var(--tag-yellow-bg);
+            color: var(--tag-yellow-text);
+        }
+
+        .result-item.blue {
+            background-color: var(--tag-blue-bg);
+            color: var(--tag-blue-text);
+        }
+
+        .result-item.gray {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+
+        .form-group.input-solution {
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 1 coluna por padrão (mobile vertical) */
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background-color: #fdfdfd;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group.input-solution label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-title);
+        }
+
+        .global-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        /* --- Layout do Formulário --- */
+        .form-group {
+            display: grid;
+            /* DEFAULT (Mobile-first): Layout Vertical (1 coluna) */
+            grid-template-columns: 1fr;
+            gap: 8px;
+            /* Espaço entre label e input */
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 4px;
+        }
+
+        .form-group:last-child {
+            border-bottom: none;
+        }
+
+        .form-group label {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-label);
+            line-height: 1.4;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-title);
+            border: 1px solid #DDD;
+            border-radius: 8px;
+            background-color: var(--bg-page);
+            box-sizing: border-box;
+            text-align: left;
+            /* Alinhado à esquerda por padrão (mobile) */
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px #c09f9430;
+        }
+
+        .output-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 4px;
+            border-top: 1px dashed var(--border-color);
+            margin-top: 16px;
+        }
+
+        .output-group .label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-body);
+        }
+
+        .output-group .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        .output-group .value.positive {
+            color: #C79A00;
+            /* Amarelo escuro */
+        }
+
+        /* --- Media Queries para Responsividade --- */
+
+        /* Layout 70/30 (Celular horizontal e telas maiores) */
+        @media (min-width: 600px) {
+            .form-group {
+                /* Layout 70% / 30% */
+                grid-template-columns: 70% 30%;
+                align-items: center;
+                gap: 16px;
+                /* Espaço entre label e input */
+            }
+
+            .form-group.input-solution {
+                grid-template-columns: 1fr auto;
+                /* Layout especial para o campo "Valor da Solução" */
+                gap: 16px;
+            }
+
+            .form-group input {
+                text-align: right;
+                /* Alinha à direita em telas maiores */
+            }
+        }
+
+        /* Telas de Tablet (agrupa os cards globais) */
+        @media (min-width: 768px) {
+            .global-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Telas de Desktop (agrupa também os módulos de perda) */
+        @media (min-width: 1024px) {
+            .modules-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header class="header">
+            <h1>Calculadora de ROI (Custo da Inação)</h1>
+            <p>Simule o impacto financeiro de processos manuais na sua clínica.</p>
+        </header>
+
+        <!-- 1. SEÇÃO DE RESULTADOS (ROI) -->
+        <div class="card">
+            <h2>Resultados Chave (ROI)</h2>
+            <p class="explanation">
+                Esta seção mostra o resultado final da simulação. A <strong>'Perda Total Anual'</strong> é o quanto a
+                clínica deixa de ganhar (ou perde) em 12 meses ao manter os processos manuais. O
+                <strong>'Payback'</strong> mostra em quantos meses o investimento na nova ferramenta se paga com a economia
+                gerada.
+            </p>
+
+            <div class="results-grid">
+                <div class="result-item yellow">
+                    Perda Total Mensal (R$)
+                    <span id="out_Perda_Total_Mensal">R$ 0,00</span>
+                </div>
+                <div class="result-item yellow">
+                    Perda Total Anual (R$)
+                    <span id="out_Perda_Total_Anual">R$ 0,00</span>
+                </div>
+                <div class="result-item blue">
+                    Payback da Solução (Meses)
+                    <span id="out_Payback_Meses">0.00</span>
+                </div>
+            </div>
+
+            <div class="form-group input-solution">
+                <label for="in_Valor_Solucao">Valor da Solução (R$)</label>
+                <input type="number" id="in_Valor_Solucao" value="90000" step="1000">
+            </div>
+        </div>
+
+        <!-- 2. PARÂMETROS GLOBAIS -->
+        <div class="global-grid">
+            <div class="card">
+                <h2>Parâmetros da Clínica</h2>
+                <p class="explanation">
+                    Números principais do negócio. A <strong>'Base de Pacientes'</strong> e o <strong>'Preço dos
+                        Pacotes'</strong> são os motores do faturamento. A <strong>'Dose Média'</strong> e o <strong>'Ticket
+                        Avulso'</strong> definem o valor de cada perda.
+                </p>
+
+                <div class="form-group">
+                    <label for="in_Base_Pacientes">Base de Pacientes Ativos</label>
+                    <input type="number" id="in_Base_Pacientes" value="150">
+                </div>
+                <div class="form-group">
+                    <label for="in_Preco_Venda_Pacote">Preço de Venda do Pacote (R$)</label>
+                    <input type="number" id="in_Preco_Venda_Pacote" value="9000.00" step="100">
+                </div>
+                <div class="form-group">
+                    <label for="in_Duracao_Ciclo">Duração do Ciclo (Meses)</label>
+                    <input type="number" id="in_Duracao_Ciclo" value="3" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="in_Dose_Media_Pacote">Dose Média por Pacote (mg)</label>
+                    <input type="number" id="in_Dose_Media_Pacote" value="60" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="in_Ticket_Medio_Avulso">Ticket Médio Avulso (R$)</label>
+                    <input type="number" id="in_Ticket_Medio_Avulso" value="166.67" step="10">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Parâmetros de Custo de Equipe</h2>
+                <p class="explanation">
+                    Esta seção calcula o <strong>'Custo-Hora'</strong> real de um funcionário. O salário base não é o
+                    custo total; os encargos (FGTS, INSS, férias, etc.) são incluídos. Usamos isso para medir o custo do
+                    retrabalho manual.
+                </p>
+                <div class="form-group">
+                    <label for="in_Salario_Base">Salário Base Médio (R$)</label>
+                    <input type="number" id="in_Salario_Base" value="1800.00" step="50">
+                </div>
+                <div class="form-group">
+                    <label for="in_Encargos_CLT">% Encargos CLT (Aprox.)</label>
+                    <input type="number" id="in_Encargos_CLT" value="80">
+                </div>
+                <div class="form-group">
+                    <label for="in_Horas_Semana">Horas de Trabalho por Semana</label>
+                    <input type="number" id="in_Horas_Semana" value="32">
+                </div>
+                <div class="form-group">
+                    <label for="in_Semanas_Mes">Semanas no Mês (Média)</label>
+                    <input type="number" id="in_Semanas_Mes" value="4.4">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Premissa: Custo-Hora da Equipe (R$)</span>
+                    <span class="value" id="out_Custo_Hora_Equipe">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. MÓDULOS DE PERDA OPERACIONAL -->
+        <h2>Módulos de Perda Operacional (Simulação de Risco)</h2>
+        <div class="modules-grid">
+            <!-- Card Exercício 1 -->
+            <div class="card">
+                <h3>Ex. 1: "Conta de Bar" (Avulsos)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Perda de receita de serviços avulsos (B12, Vita D) por falha no controle
+                    manual e esquecimento na hora da cobrança.
+                </p>
+                <div class="form-group">
+                    <label for="in_Pct_Pacientes_Avulsos">% de Pacientes com Avulsos</label>
+                    <input type="number" id="in_Pct_Pacientes_Avulsos" value="20">
+                </div>
+                <div class="form-group">
+                    <label for="in_Pct_Esquecimento_Cobranca">% de Esquecimento na Cobrança</label>
+                    <input type="number" id="in_Pct_Esquecimento_Cobranca" value="10">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Perda Mensal (Ex. 1)</span>
+                    <span class="value positive" id="out_Perda_Ex1_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+
+            <!-- Card Exercício 2 -->
+            <div class="card">
+                <h3>Ex. 2: "Pacientes Sumidos" (Churn)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Perda de renovações de pacote por falta de um contato ativo (FUP) com
+                    pacientes que estão terminando o ciclo de tratamento.
+                </p>
+                <div class="form-group">
+                    <label for="in_Pct_Churn_Evitavel">% de Churn Evitável (Falta de FUP)</label>
+                    <input type="number" id="in_Pct_Churn_Evitavel" value="10">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Premissa: Pacientes em Renovação/Mês</span>
+                    <span class="value" id="out_Pacientes_em_Renovacao">0</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Premissa: Ticket Médio Mensal (Pacote)</span>
+                    <span class="value" id="out_Ticket_Medio_Mensal_Pacote">R$ 0,00</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Perda Mensal (Ex. 2)</span>
+                    <span class="value positive" id="out_Perda_Ex2_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+            <!-- Card Exercício 3 -->
+            <div class="card">
+                <h3>Ex. 3: "Triplo Registro" (Ineficiência)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Custo do tempo da equipe gasto em retrabalho (gestão de fichas, cadernos,
+                    listas) em vez de atividades que geram valor.
+                </p>
+                <div class="form-group">
+                    <label for="in_Pct_Tempo_Retrabalho">% de Tempo Gasto em Retrabalho</label>
+                    <input type="number" id="in_Pct_Tempo_Retrabalho" value="15">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Premissa: Horas de Retrabalho/Mês</span>
+                    <span class="value" id="out_Horas_Retrabalho_Mes">0.00</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Custo Mensal (Ex. 3)</span>
+                    <span class="value positive" id="out_Perda_Ex3_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+            <!-- Card Exercício 4 -->
+            <div class="card">
+                <h3>Ex. 4: "Saldos Devedores" (Inadimplência)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Perda de receita por falha no controle de pagamentos parciais, onde saldos
+                    devedores deixam de ser cobrados do paciente.
+                </p>
+                <div class="form-group">
+                    <label for="in_Ocorrencias_Saldo_Perdido">Ocorrências de Saldo Perdido/mês</label>
+                    <input type="number" id="in_Ocorrencias_Saldo_Perdido" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="in_Valor_Medio_Saldo_Perdido">Valor Médio do Saldo Perdido (R$)</label>
+                    <input type="number" id="in_Valor_Medio_Saldo_Perdido" value="300.00" step="50">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Perda Mensal (Ex. 4)</span>
+                    <span class="value positive" id="out_Perda_Ex4_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+            <!-- Card Exercício 5 -->
+            <div class="card">
+                <h3>Ex. 5: "Dose Extra" (Erro Operacional)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Perda de receita ao aplicar uma dose a mais (por erro de controle manual) que
+                    não foi paga pelo paciente no pacote.
+                </p>
+                <div class="form-group">
+                    <label for="in_Dose_Erro_mg">Dose de Erro (mg)</label>
+                    <input type="number" id="in_Dose_Erro_mg" value="2.5" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label for="in_Ocorrencias_Dose_Extra">Ocorrências de Dose Extra/mês</label>
+                    <input type="number" id="in_Ocorrencias_Dose_Extra" value="1.5" step="0.5">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Premissa: Preço de Venda por MG (R$)</span>
+                    <span class="value" id="out_Preco_Venda_por_MG">R$ 0,00</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Premissa: Valor da Receita Perdida (por Erro)</span>
+                    <span class="value" id="out_Valor_Venda_Dose_Erro">R$ 0,00</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Perda Mensal (Ex. 5)</span>
+                    <span class="value positive" id="out_Perda_Ex5_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+        </div> <!-- Fim .modules-grid -->
+    </div> <!-- Fim .container -->
+
+    <!-- Início do Script JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Mapeamento de todos os IDs de INPUT para facilitar a leitura
+            const inputs = {
+                // ROI
+                Valor_Solucao: document.getElementById('in_Valor_Solucao'),
+                // Clínica
+                Base_Pacientes: document.getElementById('in_Base_Pacientes'),
+                Preco_Venda_Pacote: document.getElementById('in_Preco_Venda_Pacote'),
+                Duracao_Ciclo: document.getElementById('in_Duracao_Ciclo'),
+                Dose_Media_Pacote: document.getElementById('in_Dose_Media_Pacote'),
+                Ticket_Medio_Avulso: document.getElementById('in_Ticket_Medio_Avulso'),
+                // Equipe
+                Salario_Base: document.getElementById('in_Salario_Base'),
+                Encargos_CLT: document.getElementById('in_Encargos_CLT'),
+                Horas_Semana: document.getElementById('in_Horas_Semana'),
+                Semanas_Mes: document.getElementById('in_Semanas_Mes'),
+                // Risco Ex 1
+                Pct_Pacientes_Avulsos: document.getElementById('in_Pct_Pacientes_Avulsos'),
+                Pct_Esquecimento_Cobranca: document.getElementById('in_Pct_Esquecimento_Cobranca'),
+                // Risco Ex 2
+                Pct_Churn_Evitavel: document.getElementById('in_Pct_Churn_Evitavel'),
+                // Risco Ex 3
+                Pct_Tempo_Retrabalho: document.getElementById('in_Pct_Tempo_Retrabalho'),
+                // Risco Ex 4
+                Ocorrencias_Saldo_Perdido: document.getElementById('in_Ocorrencias_Saldo_Perdido'),
+                Valor_Medio_Saldo_Perdido: document.getElementById('in_Valor_Medio_Saldo_Perdido'),
+                // Risco Ex 5
+                Dose_Erro_mg: document.getElementById('in_Dose_Erro_mg'),
+                Ocorrencias_Dose_Extra: document.getElementById('in_Ocorrencias_Dose_Extra'),
+            };
+
+            // Mapeamento de todos os IDs de OUTPUT
+            const outputs = {
+                // ROI
+                Perda_Total_Mensal: document.getElementById('out_Perda_Total_Mensal'),
+                Perda_Total_Anual: document.getElementById('out_Perda_Total_Anual'),
+                Payback_Meses: document.getElementById('out_Payback_Meses'),
+                // Premissas Equipe
+                Custo_Hora_Equipe: document.getElementById('out_Custo_Hora_Equipe'),
+                // Premissas Ex 2
+                Pacientes_em_Renovacao: document.getElementById('out_Pacientes_em_Renovacao'),
+                Ticket_Medio_Mensal_Pacote: document.getElementById('out_Ticket_Medio_Mensal_Pacote'),
+                // Premissas Ex 3
+                Horas_Retrabalho_Mes: document.getElementById('out_Horas_Retrabalho_Mes'),
+                // Premissas Ex 5
+                Preco_Venda_por_MG: document.getElementById('out_Preco_Venda_por_MG'),
+                Valor_Venda_Dose_Erro: document.getElementById('out_Valor_Venda_Dose_Erro'),
+                // Perdas Modulares
+                Perda_Ex1_Mensal: document.getElementById('out_Perda_Ex1_Mensal'),
+                Perda_Ex2_Mensal: document.getElementById('out_Perda_Ex2_Mensal'),
+                Perda_Ex3_Mensal: document.getElementById('out_Perda_Ex3_Mensal'),
+                Perda_Ex4_Mensal: document.getElementById('out_Perda_Ex4_Mensal'),
+                Perda_Ex5_Mensal: document.getElementById('out_Perda_Ex5_Mensal'),
+            };
+
+            // Funções de Formatação
+            const formatCurrency = (value) => {
+                return value.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                });
+            };
+
+            const formatNumber = (value, decimalPlaces = 2) => {
+                return value.toLocaleString('pt-BR', {
+                    minimumFractionDigits: decimalPlaces,
+                    maximumFractionDigits: decimalPlaces
+                });
+            };
+
+            const formatInteger = (value) => {
+                return value.toLocaleString('pt-BR', {
+                    maximumFractionDigits: 0
+                });
+            };
+
+            // --- INÍCIO DA LÓGICA RECONSTRUÍDA ---
+
+            // Função Principal de Cálculo
+            function calcularROI() {
+                // 1. Coletar todos os valores dos inputs
+                const v = {};
+                for (const key in inputs) {
+                    v[key] = parseFloat(inputs[key].value) || 0;
+                }
+
+                // 2. Cálculos Intermediários (Premissas)
+                const p = {}; // 'p' de premissas
+
+                // Premissas de Custo de Equipe
+                p.Custo_Total_Func_Mes = v.Salario_Base * (1 + (v.Encargos_CLT / 100));
+                p.Horas_Jornada_Mensal = v.Horas_Semana * v.Semanas_Mes;
+                p.Custo_Hora_Equipe = (p.Horas_Jornada_Mensal > 0) ? p.Custo_Total_Func_Mes / p.Horas_Jornada_Mensal : 0;
+
+                // Premissas de Pacotes (Ex 2 e 5)
+                p.Pacientes_em_Renovacao = (v.Duracao_Ciclo > 0) ? v.Base_Pacientes / v.Duracao_Ciclo : 0;
+                p.Ticket_Medio_Mensal_Pacote = (v.Duracao_Ciclo > 0) ? v.Preco_Venda_Pacote / v.Duracao_Ciclo : 0;
+                p.Preco_Venda_por_MG = (v.Dose_Media_Pacote > 0) ? v.Preco_Venda_Pacote / v.Dose_Media_Pacote : 0;
+                p.Valor_Venda_Dose_Erro = p.Preco_Venda_por_MG * v.Dose_Erro_mg;
+
+                // Premissas Ex 3
+                p.Horas_Retrabalho_Mes = p.Horas_Jornada_Mensal * (v.Pct_Tempo_Retrabalho / 100);
+
+                // 3. Cálculos de Perdas Modulares
+                const m = {}; // 'm' de modulares
+
+                // Ex 1: "Conta de Bar" (Avulsos)
+                m.Perda_Ex1_Mensal = v.Base_Pacientes * (v.Pct_Pacientes_Avulsos / 100) * v.Ticket_Medio_Avulso * (v.Pct_Esquecimento_Cobranca / 100);
+                
+                // Ex 2: "Pacientes Sumidos" (Churn)
+                m.Perda_Ex2_Mensal = p.Pacientes_em_Renovacao * (v.Pct_Churn_Evitavel / 100) * p.Ticket_Medio_Mensal_Pacote;
+                
+                // Ex 3: "Triplo Registro" (Ineficiência)
+                m.Perda_Ex3_Mensal = p.Horas_Retrabalho_Mes * p.Custo_Hora_Equipe;
+                
+                // Ex 4: "Saldos Devedores" (Inadimplência)
+                m.Perda_Ex4_Mensal = v.Ocorrencias_Saldo_Perdido * v.Valor_Medio_Saldo_Perdido;
+                
+                // Ex 5: "Dose Extra" (Erro Operacional)
+                m.Perda_Ex5_Mensal = v.Ocorrencias_Dose_Extra * p.Valor_Venda_Dose_Erro;
+
+                // 4. Cálculos Finais (ROI e Totais)
+                const r = {}; // 'r' de resultados
+                r.Perda_Total_Mensal = m.Perda_Ex1_Mensal + m.Perda_Ex2_Mensal + m.Perda_Ex3_Mensal + m.Perda_Ex4_Mensal + m.Perda_Ex5_Mensal;
+                r.Perda_Total_Anual = r.Perda_Total_Mensal * 12;
+                r.Payback_Meses = (r.Perda_Total_Mensal > 0) ? v.Valor_Solucao / r.Perda_Total_Mensal : 0;
+
+                // 5. Atualizar a UI (Outputs)
+
+                // Premissas
+                outputs.Custo_Hora_Equipe.textContent = formatCurrency(p.Custo_Hora_Equipe);
+                outputs.Pacientes_em_Renovacao.textContent = formatInteger(p.Pacientes_em_Renovacao);
+                outputs.Ticket_Medio_Mensal_Pacote.textContent = formatCurrency(p.Ticket_Medio_Mensal_Pacote);
+                outputs.Horas_Retrabalho_Mes.textContent = formatNumber(p.Horas_Retrabalho_Mes, 2);
+                outputs.Preco_Venda_por_MG.textContent = formatCurrency(p.Preco_Venda_por_MG);
+                outputs.Valor_Venda_Dose_Erro.textContent = formatCurrency(p.Valor_Venda_Dose_Erro);
+
+                // Perdas Modulares
+                outputs.Perda_Ex1_Mensal.textContent = formatCurrency(m.Perda_Ex1_Mensal);
+                outputs.Perda_Ex2_Mensal.textContent = formatCurrency(m.Perda_Ex2_Mensal);
+                outputs.Perda_Ex3_Mensal.textContent = formatCurrency(m.Perda_Ex3_Mensal);
+                outputs.Perda_Ex4_Mensal.textContent = formatCurrency(m.Perda_Ex4_Mensal);
+                outputs.Perda_Ex5_Mensal.textContent = formatCurrency(m.Perda_Ex5_Mensal);
+
+                // Resultados Chave
+                outputs.Perda_Total_Mensal.textContent = formatCurrency(r.Perda_Total_Mensal);
+                outputs.Perda_Total_Anual.textContent = formatCurrency(r.Perda_Total_Anual);
+                outputs.Payback_Meses.textContent = formatNumber(r.Payback_Meses, 2);
+            
+            } // Fim da função calcularROI()
+
+            // 6. Adicionar Event Listeners
+            // Adiciona um listener 'input' para cada input
+            for (const key in inputs) {
+                inputs[key].addEventListener('input', calcularROI);
+            }
+
+            // 7. Calcular ao carregar a página
+            // Garante que os valores iniciais sejam calculados assim que a página carrega
+            calcularROI();
+
+        }); // Fim do DOMContentLoaded
+    </script>
+</body>
+</html>
+
