@@ -215,6 +215,21 @@
             font-weight: 500;
             color: var(--text-body);
         }
+        
+        /* MUDANÇA (TAREFA 1 - CSS): Estilo para o label de "Perda Anual" */
+        .output-group .label-anual {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-body);
+            font-style: italic;
+            padding-left: 12px;
+        }
+        /* MUDANÇA (TAREFA 1 - CSS): Estilo para o valor de "Perda Anual" */
+        .output-group .value-anual {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-title);
+        }
 
         .output-group .value {
             font-size: 16px;
@@ -226,6 +241,14 @@
             color: #C79A00;
             /* Amarelo escuro */
         }
+        
+        /* MUDANÇA (TAREFA 1 - CSS): Modificador para o grupo anual (remove borda e ajusta espaçamento) */
+        .output-group.anual {
+            border-top: 1px dashed #f5f5f5; /* Borda mais suave */
+            margin-top: 4px;
+            padding-top: 4px;
+        }
+
 
         /* --- Media Queries para Responsividade --- */
 
@@ -375,6 +398,11 @@
                     <span class="label">Perda Mensal (Ex. 1)</span>
                     <span class="value positive" id="out_Perda_Ex1_Mensal">R$ 0,00</span>
                 </div>
+                <!-- MUDANÇA (TAREFA 1 - HTML): Nova linha de Perda Anual -->
+                <div class="output-group anual">
+                    <span class="label-anual">└ Perda Anual (Ex. 1)</span>
+                    <span class="value positive value-anual" id="out_Perda_Ex1_Anual">R$ 0,00</span>
+                </div>
             </div>
             <!-- Card Exercício 2 -->
             <div class="card">
@@ -403,6 +431,11 @@
                 <div class="output-group">
                     <span class="label">Perda Mensal (Ex. 2)</span>
                     <span class="value positive" id="out_Perda_Ex2_Mensal">R$ 0,00</span>
+                </div>
+                <!-- MUDANÇA (TAREFA 1 - HTML): Nova linha de Perda Anual -->
+                <div class="output-group anual">
+                    <span class="label-anual">└ Perda Anual (Ex. 2)</span>
+                    <span class="value positive value-anual" id="out_Perda_Ex2_Anual">R$ 0,00</span>
                 </div>
             </div>
             <!-- Card Exercício 3 -->
@@ -433,6 +466,11 @@
                     <span class="label">Perda Mensal (Ex. 3)</span>
                     <span class="value positive" id="out_Perda_Ex3_Mensal">R$ 0,00</span>
                 </div>
+                <!-- MUDANÇA (TAREFA 1 - HTML): Nova linha de Perda Anual -->
+                <div class="output-group anual">
+                    <span class="label-anual">└ Perda Anual (Ex. 3)</span>
+                    <span class="value positive value-anual" id="out_Perda_Ex3_Anual">R$ 0,00</span>
+                </div>
             </div>
             <!-- Card Exercício 4 -->
             <div class="card">
@@ -457,6 +495,11 @@
                 <div class="output-group">
                     <span class="label">Custo Mensal (Ex. 4)</span>
                     <span class="value positive" id="out_Perda_Ex4_Mensal">R$ 0,00</span>
+                </div>
+                <!-- MUDANÇA (TAREFA 1 - HTML): Nova linha de Perda Anual -->
+                <div class="output-group anual">
+                    <span class="label-anual">└ Custo Anual (Ex. 4)</span>
+                    <span class="value positive value-anual" id="out_Perda_Ex4_Anual">R$ 0,00</span>
                 </div>
             </div>
                        <!-- Card Exercício 5 -->
@@ -486,6 +529,11 @@
                 <div class="output-group">
                     <span class="label">Perda Mensal (Ex. 5)</span>
                     <span class="value positive" id="out_Perda_Ex5_Mensal">R$ 0,00</span>
+                </div>
+                <!-- MUDANÇA (TAREFA 1 - HTML): Nova linha de Perda Anual -->
+                <div class="output-group anual">
+                    <span class="label-anual">└ Perda Anual (Ex. 5)</span>
+                    <span class="value positive value-anual" id="out_Perda_Ex5_Anual">R$ 0,00</span>
                 </div>
             </div>
         </div> <!-- Fim .modules-grid -->
@@ -580,6 +628,13 @@
                 Perda_Ex3_Mensal: document.getElementById('out_Perda_Ex3_Mensal'),
                 Perda_Ex4_Mensal: document.getElementById('out_Perda_Ex4_Mensal'),
                 Perda_Ex5_Mensal: document.getElementById('out_Perda_Ex5_Mensal'),
+                
+                // MUDANÇA (TAREFA 2 - JS): Mapeamento dos novos campos anuais
+                Perda_Ex1_Anual: document.getElementById('out_Perda_Ex1_Anual'),
+                Perda_Ex2_Anual: document.getElementById('out_Perda_Ex2_Anual'),
+                Perda_Ex3_Anual: document.getElementById('out_Perda_Ex3_Anual'),
+                Perda_Ex4_Anual: document.getElementById('out_Perda_Ex4_Anual'),
+                Perda_Ex5_Anual: document.getElementById('out_Perda_Ex5_Anual'),
 
                 // MUDANÇA (TAREFA 3): Mapeamento dos novos campos de info
                 info_Pct_Pacientes_Avulsos: document.getElementById('info_Pct_Pacientes_Avulsos'),
@@ -715,6 +770,14 @@
                 // Ex 3: "Dose Extra" (Erro Operacional)
                 m.Perda_Ex3_Mensal = v.Ocorrencias_Dose_Extra * p.Valor_Venda_Dose_Erro;
 
+                // MUDANÇA (TAREFA 3 - JS): Cálculo das perdas anuais modulares
+                m.Perda_Ex1_Anual = m.Perda_Ex1_Mensal * 12;
+                m.Perda_Ex2_Anual = m.Perda_Ex2_Mensal * 12;
+                m.Perda_Ex3_Anual = m.Perda_Ex3_Mensal * 12;
+                m.Perda_Ex4_Anual = m.Perda_Ex4_Mensal * 12;
+                m.Perda_Ex5_Anual = m.Perda_Ex5_Mensal * 12;
+
+
                 // 4. Cálculos Finais (ROI e Totais)
                 const r = {}; // 'r' de resultados
                 r.Perda_Total_Mensal = m.Perda_Ex1_Mensal + m.Perda_Ex2_Mensal + m.Perda_Ex3_Mensal + m.Perda_Ex4_Mensal + m.Perda_Ex5_Mensal;
@@ -752,6 +815,14 @@
                 outputs.Perda_Ex3_Mensal.textContent = formatCurrency(m.Perda_Ex3_Mensal);
                 outputs.Perda_Ex4_Mensal.textContent = formatCurrency(m.Perda_Ex4_Mensal);
                 outputs.Perda_Ex5_Mensal.textContent = formatCurrency(m.Perda_Ex5_Mensal);
+
+                // MUDANÇA (TAREFA 3 - JS): Atualizar UI das perdas anuais
+                outputs.Perda_Ex1_Anual.textContent = formatCurrency(m.Perda_Ex1_Anual);
+                outputs.Perda_Ex2_Anual.textContent = formatCurrency(m.Perda_Ex2_Anual);
+                outputs.Perda_Ex3_Anual.textContent = formatCurrency(m.Perda_Ex3_Anual);
+                outputs.Perda_Ex4_Anual.textContent = formatCurrency(m.Perda_Ex4_Anual);
+                outputs.Perda_Ex5_Anual.textContent = formatCurrency(m.Perda_Ex5_Anual);
+
 
                 // Resultados Chave
                 outputs.Perda_Total_Mensal.textContent = formatCurrency(r.Perda_Total_Mensal);
@@ -802,4 +873,5 @@
     </script>
 </body>
 </html>
+
 
