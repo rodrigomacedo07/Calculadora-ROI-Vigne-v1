@@ -387,7 +387,30 @@
         <div class="modules-grid">
             <!-- Card Exercício 1 -->
             <div class="card">
-                <h3>Ex. 1: "Conta de Bar" (Avulsos)</h3>
+                <h3>Ex. 1: "Saldos Devedores" (Inadimplência)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Perda de receita por falha no controle de pagamentos parciais, onde saldos
+                    devedores deixam de ser cobrados do paciente.
+                </p>
+                <div class="form-group">
+                    <label for="in_Ocorrencias_Saldo_Perdido">Ocorrências de Saldo Perdido/mês</label>
+                    <input type="number" id="in_Ocorrencias_Saldo_Perdido" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="in_Valor_Medio_Saldo_Perdido">Valor Médio do Saldo Perdido (R$)</label>
+                    <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
+                    <!-- MUDANÇA (TAREFA 1 - FIX): value="300.00" -> value="300" -->
+                    <input type="text" id="in_Valor_Medio_Saldo_Perdido" value="300" inputmode="numeric">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Perda Mensal (Ex. 1)</span>
+                    <span class="value positive" id="out_Perda_Ex1_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+            <!-- Card Exercício 2 -->
+            <div class="card">
+                <h3>Ex. 2: "Conta de Bar" (Avulsos)</h3>
                 <p class="explanation">
                     <strong>A Dor:</strong> Perda de receita de serviços avulsos (B12, Vita D) por falha no controle
                     manual e esquecimento na hora da cobrança.
@@ -410,14 +433,67 @@
                 </div>
 
                 <div class="output-group">
-                    <span class="label">Perda Mensal (Ex. 1)</span>
-                    <span class="value positive" id="out_Perda_Ex1_Mensal">R$ 0,00</span>
+                    <span class="label">Perda Mensal (Ex. 2)</span>
+                    <span class="value positive" id="out_Perda_Ex2_Mensal">R$ 0,00</span>
                 </div>
             </div>
-
-            <!-- Card Exercício 2 -->
+            <!-- Card Exercício 3 -->
             <div class="card">
-                <h3>Ex. 2: "Pacientes Sumidos" (Churn)</h3>
+                <h3>Ex. 3: "Dose Extra" (Erro Operacional)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Perda de receita ao aplicar uma dose a mais (por erro de controle manual) que
+                    não foi paga pelo paciente no pacote.
+                </p>
+                <div class="form-group">
+                    <label for="in_Dose_Erro_mg">Dose de Erro (mg)</label>
+                    <input type="number" id="in_Dose_Erro_mg" value="2.5" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label for="in_Ocorrencias_Dose_Extra">Ocorrências de Dose Extra/mês</label>
+                    <input type="number" id="in_Ocorrencias_Dose_Extra" value="1.5" step="0.5">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Premissa: Preço de Venda por "mg" (R$)</span>
+                    <span class="value" id="out_Preco_Venda_por_MG">R$ 0,00</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Premissa: Valor da Receita Perdida (por Erro)</span>
+                    <span class="value" id="out_Valor_Venda_Dose_Erro">R$ 0,00</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Perda Mensal (Ex. 3)</span>
+                    <span class="value positive" id="out_Perda_Ex3_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+            <!-- Card Exercício 4 -->
+            <div class="card">
+                <h3>Ex. 4: "Triplo Registro" (Ineficiência)</h3>
+                <p class="explanation">
+                    <strong>A Dor:</strong> Custo do tempo da equipe gasto em retrabalho (gestão de fichas, cadernos,
+                    listas) em vez de atividades que geram valor.
+                </p>
+                <!-- MUDANÇA (TAREFA 2): Estrutura do form-group alterada -->
+                <div class="form-group">
+                    <div>
+                        <label for="in_Pct_Tempo_Retrabalho">% de Tempo Gasto em Retrabalho</label>
+                        <span class="form-group-info" id="info_Pct_Tempo_Retrabalho"></span>
+                    </div>
+                    <input type="number" id="in_Pct_Tempo_Retrabalho" value="15">
+                </div>
+
+                <div class="output-group">
+                    <span class="label">Premissa: Horas de Retrabalho/Mês</span>
+                    <span class="value" id="out_Horas_Retrabalho_Mes">0.00</span>
+                </div>
+                <div class="output-group">
+                    <span class="label">Custo Mensal (Ex. 4)</span>
+                    <span class="value positive" id="out_Perda_Ex4_Mensal">R$ 0,00</span>
+                </div>
+            </div>
+                       <!-- Card Exercício 5 -->
+            <div class="card">
+                <h3>Ex. 5: "Pacientes Sumidos" (Churn)</h3>
                 <p class="explanation">
                     <strong>A Dor:</strong> Perda de renovações de pacote por falta de um contato ativo (FUP) com
                     pacientes que estão terminando o ciclo de tratamento.
@@ -438,83 +514,6 @@
                 <div class="output-group">
                     <span class="label">Premissa: Ticket Médio Mensal (Pacote)</span>
                     <span class="value" id="out_Ticket_Medio_Mensal_Pacote">R$ 0,00</span>
-                </div>
-                <div class="output-group">
-                    <span class="label">Perda Mensal (Ex. 2)</span>
-                    <span class="value positive" id="out_Perda_Ex2_Mensal">R$ 0,00</span>
-                </div>
-            </div>
-            <!-- Card Exercício 3 -->
-            <div class="card">
-                <h3>Ex. 3: "Triplo Registro" (Ineficiência)</h3>
-                <p class="explanation">
-                    <strong>A Dor:</strong> Custo do tempo da equipe gasto em retrabalho (gestão de fichas, cadernos,
-                    listas) em vez de atividades que geram valor.
-                </p>
-                <!-- MUDANÇA (TAREFA 2): Estrutura do form-group alterada -->
-                <div class="form-group">
-                    <div>
-                        <label for="in_Pct_Tempo_Retrabalho">% de Tempo Gasto em Retrabalho</label>
-                        <span class="form-group-info" id="info_Pct_Tempo_Retrabalho"></span>
-                    </div>
-                    <input type="number" id="in_Pct_Tempo_Retrabalho" value="15">
-                </div>
-
-                <div class="output-group">
-                    <span class="label">Premissa: Horas de Retrabalho/Mês</span>
-                    <span class="value" id="out_Horas_Retrabalho_Mes">0.00</span>
-                </div>
-                <div class="output-group">
-                    <span class="label">Custo Mensal (Ex. 3)</span>
-                    <span class="value positive" id="out_Perda_Ex3_Mensal">R$ 0,00</span>
-                </div>
-            </div>
-            <!-- Card Exercício 4 -->
-            <div class="card">
-                <h3>Ex. 4: "Saldos Devedores" (Inadimplência)</h3>
-                <p class="explanation">
-                    <strong>A Dor:</strong> Perda de receita por falha no controle de pagamentos parciais, onde saldos
-                    devedores deixam de ser cobrados do paciente.
-                </p>
-                <div class="form-group">
-                    <label for="in_Ocorrencias_Saldo_Perdido">Ocorrências de Saldo Perdido/mês</label>
-                    <input type="number" id="in_Ocorrencias_Saldo_Perdido" value="1">
-                </div>
-                <div class="form-group">
-                    <label for="in_Valor_Medio_Saldo_Perdido">Valor Médio do Saldo Perdido (R$)</label>
-                    <!-- MUDANÇA (TAREFA 2): type="number" -> type="text" e inputmode="numeric" -->
-                    <!-- MUDANÇA (TAREFA 1 - FIX): value="300.00" -> value="300" -->
-                    <input type="text" id="in_Valor_Medio_Saldo_Perdido" value="300" inputmode="numeric">
-                </div>
-
-                <div class="output-group">
-                    <span class="label">Perda Mensal (Ex. 4)</span>
-                    <span class="value positive" id="out_Perda_Ex4_Mensal">R$ 0,00</span>
-                </div>
-            </div>
-            <!-- Card Exercício 5 -->
-            <div class="card">
-                <h3>Ex. 5: "Dose Extra" (Erro Operacional)</h3>
-                <p class="explanation">
-                    <strong>A Dor:</strong> Perda de receita ao aplicar uma dose a mais (por erro de controle manual) que
-                    não foi paga pelo paciente no pacote.
-                </p>
-                <div class="form-group">
-                    <label for="in_Dose_Erro_mg">Dose de Erro (mg)</label>
-                    <input type="number" id="in_Dose_Erro_mg" value="2.5" step="0.5">
-                </div>
-                <div class="form-group">
-                    <label for="in_Ocorrencias_Dose_Extra">Ocorrências de Dose Extra/mês</label>
-                    <input type="number" id="in_Ocorrencias_Dose_Extra" value="1.5" step="0.5">
-                </div>
-
-                <div class="output-group">
-                    <span class="label">Premissa: Preço de Venda por MG (R$)</span>
-                    <span class="value" id="out_Preco_Venda_por_MG">R$ 0,00</span>
-                </div>
-                <div class="output-group">
-                    <span class="label">Premissa: Valor da Receita Perdida (por Erro)</span>
-                    <span class="value" id="out_Valor_Venda_Dose_Erro">R$ 0,00</span>
                 </div>
                 <div class="output-group">
                     <span class="label">Perda Mensal (Ex. 5)</span>
